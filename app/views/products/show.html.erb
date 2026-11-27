@@ -19,6 +19,21 @@
           <p class="text-muted small">In Stock: <%= @product.stock %></p>
           <hr>
           <p class="card-text"><%= @product.description %></p>
+
+          <% if @product.stock.to_i > 0 %>
+            <%= form_with url: add_item_cart_path(product_id: @product.id), method: :post, local: true, class: "d-flex align-items-center gap-2 mt-3" do |f| %>
+              <%= f.label :quantity, "Qty:", class: "form-label mb-0 fw-semibold" %>
+              <%= f.number_field :quantity,
+                                 value: 1,
+                                 min: 1,
+                                 max: @product.stock,
+                                 class: "form-control",
+                                 style: "width: 85px;" %>
+              <%= f.submit "Add to Cart", class: "btn btn-primary" %>
+            <% end %>
+          <% else %>
+            <button type="button" class="btn btn-secondary mt-3" disabled>Out of Stock</button>
+          <% end %>
         </div>
       </div>
     </div>

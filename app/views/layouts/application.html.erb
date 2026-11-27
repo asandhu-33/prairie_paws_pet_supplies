@@ -59,6 +59,12 @@
           <% end %>
 
           <ul class="navbar-nav ms-lg-3 mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item me-lg-2">
+              <%= link_to cart_path, class: "nav-link d-inline-flex align-items-center gap-1" do %>
+                <span>Cart</span>
+                <span class="badge bg-primary"><%= cart_item_count %></span>
+              <% end %>
+            </li>
             <% if defined?(user_signed_in?) && user_signed_in? %>
               <li class="nav-item">
                 <%= link_to "My Account", edit_user_registration_path, class: "nav-link" %>
