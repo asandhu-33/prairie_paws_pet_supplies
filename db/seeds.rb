@@ -8,28 +8,28 @@ end
 
 # 2. Seed Canadian provinces and territories with tax rates
 provinces = [
-  { name: "Alberta", code: "AB", gst: 0.05, pst: 0.0, hst: 0.0 },
-  { name: "British Columbia", code: "BC", gst: 0.05, pst: 0.07, hst: 0.0 },
-  { name: "Manitoba", code: "MB", gst: 0.05, pst: 0.07, hst: 0.0 },
-  { name: "New Brunswick", code: "NB", gst: 0.0, pst: 0.0, hst: 0.15 },
-  { name: "Newfoundland and Labrador", code: "NL", gst: 0.0, pst: 0.0, hst: 0.15 },
-  { name: "Northwest Territories", code: "NT", gst: 0.05, pst: 0.0, hst: 0.0 },
-  { name: "Nova Scotia", code: "NS", gst: 0.0, pst: 0.0, hst: 0.14 },
-  { name: "Nunavut", code: "NU", gst: 0.05, pst: 0.0, hst: 0.0 },
-  { name: "Ontario", code: "ON", gst: 0.0, pst: 0.0, hst: 0.13 },
-  { name: "Prince Edward Island", code: "PE", gst: 0.0, pst: 0.0, hst: 0.15 },
-  { name: "Quebec", code: "QC", gst: 0.05, pst: 0.09975, hst: 0.0 },
-  { name: "Saskatchewan", code: "SK", gst: 0.05, pst: 0.06, hst: 0.0 },
-  { name: "Yukon", code: "YT", gst: 0.05, pst: 0.0, hst: 0.0 }
+  { name: "Alberta", code: "AB", gst_rate: 0.05, pst_rate: 0.0, hst_rate: 0.0 },
+  { name: "British Columbia", code: "BC", gst_rate: 0.05, pst_rate: 0.07, hst_rate: 0.0 },
+  { name: "Manitoba", code: "MB", gst_rate: 0.05, pst_rate: 0.07, hst_rate: 0.0 },
+  { name: "New Brunswick", code: "NB", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 0.15 },
+  { name: "Newfoundland and Labrador", code: "NL", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 0.15 },
+  { name: "Northwest Territories", code: "NT", gst_rate: 0.05, pst_rate: 0.0, hst_rate: 0.0 },
+  { name: "Nova Scotia", code: "NS", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 0.14 },
+  { name: "Nunavut", code: "NU", gst_rate: 0.05, pst_rate: 0.0, hst_rate: 0.0 },
+  { name: "Ontario", code: "ON", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 0.13 },
+  { name: "Prince Edward Island", code: "PE", gst_rate: 0.0, pst_rate: 0.0, hst_rate: 0.15 },
+  { name: "Quebec", code: "QC", gst_rate: 0.05, pst_rate: 0.09975, hst_rate: 0.0 },
+  { name: "Saskatchewan", code: "SK", gst_rate: 0.05, pst_rate: 0.06, hst_rate: 0.0 },
+  { name: "Yukon", code: "YT", gst_rate: 0.05, pst_rate: 0.0, hst_rate: 0.0 }
 ]
 
 provinces.each do |prov|
-  Province.find_or_create_by!(name: prov[:name]) do |p|
-    p.code = prov[:code] if p.respond_to?(:code=)
-    p.gst = prov[:gst] if p.respond_to?(:gst=)
-    p.pst = prov[:pst] if p.respond_to?(:pst=)
-    p.hst = prov[:hst] if p.respond_to?(:hst=)
-  end
+  province = Province.find_or_initialize_by(name: prov[:name])
+  province.code = prov[:code] if province.respond_to?(:code=)
+  province.gst_rate = prov[:gst_rate] if province.respond_to?(:gst_rate=)
+  province.pst_rate = prov[:pst_rate] if province.respond_to?(:pst_rate=)
+  province.hst_rate = prov[:hst_rate] if province.respond_to?(:hst_rate=)
+  province.save!
 end
 
 # 3. Seed default About and Contact CMS pages

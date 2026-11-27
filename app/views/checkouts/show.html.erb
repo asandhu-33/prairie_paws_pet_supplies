@@ -1,0 +1,135 @@
+<div class="container pb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Checkout & Invoice</h1>
+    <%= link_to "← Back to Cart", cart_path, class: "btn btn-outline-secondary btn-sm" %>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card">
+        <div class="card-header fw-semibold">Customer & Shipping Details</div>
+        <div class="card-body">
+          <%= form_with scope: :checkout, url: checkout_path, method: :post, local: true do |f| %>
+            <div class="mb-3">
+              <%= f.label :name, "Full Name", class: "form-label" %>
+              <%= f.text_field :name, value: @customer_details[:name], class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :address, "Street Address", class: "form-label" %>
+              <%= f.text_field :address, value: @customer_details[:address], placeholder: "123 Main St", class: "form-control" %>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <%= f.label :city, "City", class: "form-label" %>
+                <%= f.text_field :city, value: @customer_details[:city], placeholder: "Winnipeg", class: "form-control" %>
+              </div>
+              <div class="col-md-6">
+                <%= f.label :postal_code, "Postal Code", class: "form-label" %>
+                <%= f.text_field :postal_code, value: @customer_details[:postal_code], placeholder: "R3B 0N2", class: "form-control" %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= f.label :province_id, "Province (Required for Tax Calculation)", class: "form-label fw-semibold" %>
+              <%= f.collection_select :province_id,
+                                      @provinces,
+                                      :id,
+                                      :name,
+                                      { selected: @customer_details[:province_id], include_blank: "Select a Province" },
+                                      { class: "form-select", required: true, id: "checkout_province_select" } %>
+            </div>
+
+            <%= f.submit "Place Order", class: "btn btn-success btn-lg w-100" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card">
+        <div class="card-header fw-semibold">Invoice Summary</div>
+        <div class="card-body">
+          <div class="table-responsive mb-3">
+            <table class="table table-sm align-middle">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th class="text-center">Qty</th>
+                  <th class="text-end">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @cart_items.each do |item| %>
+                  <tr>
+                    <td><%= item[:product].name %></td>
+                    <td class="text-center"><%= item[:quantity] %></td>
+                    <td class="text-end">$<%= number_with_precision(item[:line_total], precision: 2) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+
+          <hr>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal</span>
+            <span>$<%= number_with_precision(@invoice[:subtotal], precision: 2) %></span>
+          </div>
+
+          <% if @invoice[:gst_rate] > 0 %>
+            <div class="d-flex justify-content-between mb-2 text-muted">
+              <span>GST (<%= number_to_percentage(@invoice[:gst_rate] * 100, precision: 2) %>)</span>
+              <span>$<%= number_with_precision(@invoice[:gst_amount], precision: 2) %></span>
+            </div>
+          <% end %>
+
+          <% if @invoice[:pst_rate] > 0 %>
+            <div class="d-flex justify-content-between mb-2 text-muted">
+              <span>PST (<%= number_to_percentage(@invoice[:pst_rate] * 100, precision: 2) %>)</span>
+              <span>$<%= number_with_precision(@invoice[:pst_amount], precision: 2) %></span>
+            </div>
+          <% end %>
+
+          <% if @invoice[:hst_rate] > 0 %>
+            <div class="d-flex justify-content-between mb-2 text-muted">
+              <span>HST (<%= number_to_percentage(@invoice[:hst_rate] * 100, precision: 2) %>)</span>
+              <span>$<%= number_with_precision(@invoice[:hst_amount], precision: 2) %></span>
+            </div>
+          <% end %>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span>Total Tax</span>
+            <span>$<%= number_with_precision(@invoice[:tax_total], precision: 2) %></span>
+          </div>
+
+          <hr>
+
+          <div class="d-flex justify-content-between fs-5 fw-bold">
+            <span>Grand Total</span>
+            <span>$<%= number_with_precision(@invoice[:total], precision: 2) %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const provinceSelect = document.getElementById("checkout_province_select");
+    if (!provinceSelect) return;
+
+    provinceSelect.addEventListener("change", function () {
+      const url = new URL(window.location.href);
+      if (this.value) {
+        url.searchParams.set("province_id", this.value);
+      } else {
+        url.searchParams.delete("province_id");
+      }
+      window.location.href = url.toString();
+    });
+  });
+</script>

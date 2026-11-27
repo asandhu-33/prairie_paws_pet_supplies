@@ -13,6 +13,7 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags if respond_to?(:javascript_importmap_tags) %>
   </head>
 
   <body>
@@ -66,8 +67,19 @@
               <% end %>
             </li>
             <% if defined?(user_signed_in?) && user_signed_in? %>
-              <li class="nav-item">
-                <%= link_to "My Account", edit_user_registration_path, class: "nav-link" %>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"
+                   href="#"
+                   id="myAccountDropdown"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                  My Account
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="myAccountDropdown">
+                  <li><%= link_to "Edit Profile", edit_user_registration_path, class: "dropdown-item" %></li>
+                  <li><%= link_to "My Orders", orders_path, class: "dropdown-item" %></li>
+                </ul>
               </li>
               <li class="nav-item">
                 <%= button_to "Log Out", destroy_user_session_path, method: :delete, class: "btn btn-outline-light btn-sm ms-lg-2" %>
@@ -101,5 +113,20 @@
     </div>
 
     <%= yield %>
+
+    <script>
+      document.addEventListener("click", function (event) {
+        const toggle = document.getElementById("myAccountDropdown");
+        const menu = toggle ? toggle.nextElementSibling : null;
+        if (!toggle || !menu) return;
+
+        if (toggle.contains(event.target)) {
+          event.preventDefault();
+          menu.classList.toggle("show");
+        } else if (!menu.contains(event.target)) {
+          menu.classList.remove("show");
+        }
+      });
+    </script>
   </body>
 </html>

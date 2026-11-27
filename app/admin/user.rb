@@ -11,6 +11,9 @@ ActiveAdmin.register User do
     column :city
     column :province
     column :postal_code
+    column "Orders" do |user|
+      user.orders.count
+    end
     column :created_at
     actions
   end
@@ -32,6 +35,30 @@ ActiveAdmin.register User do
       row :postal_code
       row :created_at
       row :updated_at
+    end
+
+    panel "Orders Placed (#{user.orders.count})" do
+      if user.orders.any?
+        table_for user.orders.order(created_at: :desc) do
+          column "Order #" do |order|
+            link_to(order.order_number.presence || "Order ##{order.id}", admin_order_path(order))
+          end
+          column :status
+          column :shipping_province
+          column :subtotal do |order|
+            number_to_currency(order.subtotal || 0)
+          end
+          column :tax_total do |order|
+            number_to_currency(order.tax_total || 0)
+          end
+          column :total do |order|
+            number_to_currency(order.total || 0)
+          end
+          column :created_at
+        end
+      else
+        para "This customer has not placed any orders yet."
+      end
     end
   end
 

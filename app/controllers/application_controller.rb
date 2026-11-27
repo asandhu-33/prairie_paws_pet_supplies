@@ -10,9 +10,17 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: extra_keys)
   end
 
+  def after_sign_out_path_for(resource_or_scope)
+    if resource_or_scope.to_s == "admin_user" || resource_or_scope.is_a?(AdminUser)
+      root_path
+    else
+      super
+    end
+  end
+
   private
 
-  # Returns the session cart hash: { "product_id" => quantity }
+  # Returns the session cart hash
   def current_cart
     session[:cart] ||= {}
   end
