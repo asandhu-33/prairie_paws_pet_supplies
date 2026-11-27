@@ -46,7 +46,7 @@
                 <%= form_with url: update_item_cart_path(product_id: product.id), method: :patch, local: true, class: "d-flex gap-2" do |f| %>
                   <%= f.number_field :quantity,
                                      value: item[:quantity],
-                                     min: 0,
+                                     min: 1,
                                      max: product.stock,
                                      class: "form-control form-control-sm",
                                      style: "width: 75px;" %>

@@ -56,8 +56,7 @@ class CartsController < ApplicationController
     new_qty = params[:quantity].to_i
 
     if new_qty <= 0
-      current_cart.delete(key)
-      redirect_to cart_path, notice: "Removed #{@product.name} from your cart."
+      redirect_to cart_path, alert: "Quantity must be at least 1. Click Remove to delete #{@product.name} from your cart."
       return
     end
 
