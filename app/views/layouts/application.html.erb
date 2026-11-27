@@ -9,63 +9,85 @@
 
     <%= yield :head %>
 
+    <link rel="manifest" href="/manifest.json">
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags if respond_to?(:javascript_importmap_tags) %>
+    <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <% nav_categories = Category.where(name: %w[Dogs Cats]).order(:name) %>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <body class="bg-light d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
       <div class="container">
         <%= link_to "Prairie Paws Pet Supplies", root_path, class: "navbar-brand fw-bold" %>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="mainNav">
+        <div class="collapse navbar-collapse" id="mainNavbar">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <%= link_to "All Products", products_path, class: "nav-link" %>
+              <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
             </li>
             <li class="nav-item">
-              <%= link_to "On Sale", products_path(filter: "sale"), class: "nav-link" %>
+              <%= link_to "Products", products_path, class: "nav-link #{'active' if controller_name == 'products'}" %>
             </li>
-            <li class="nav-item">
-              <%= link_to "New Arrivals", products_path(filter: "new"), class: "nav-link" %>
-            </li>
-            <% nav_categories.each do |category| %>
-              <li class="nav-item">
-                <%= link_to category.name, products_path(category_id: category.id), class: "nav-link" %>
+
+            <% if defined?(Category) && Category.table_exists? %>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"
+                   href="#"
+                   id="categoriesDropdown"
+                   role="button"
+                   data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                  Categories
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                  <li><%= link_to "All Products", products_path, class: "dropdown-item" %></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <% Category.order(:name).each do |category| %>
+                    <li>
+                      <%= link_to category.name, products_path(category_id: category.id), class: "dropdown-item" %>
+                    </li>
+                  <% end %>
+                </ul>
               </li>
             <% end %>
+
             <li class="nav-item">
-              <%= link_to "About", about_path, class: "nav-link" %>
+              <%= link_to "About Us", about_path, class: "nav-link #{'active' if current_page?(about_path)}" %>
             </li>
             <li class="nav-item">
-              <%= link_to "Contact", contact_path, class: "nav-link" %>
+              <%= link_to "Contact", contact_path, class: "nav-link #{'active' if current_page?(contact_path)}" %>
             </li>
           </ul>
 
-          <%= form_with url: products_path, method: :get, local: true, class: "d-flex gap-2" do |f| %>
-            <%= f.select :category_id,
-                         options_from_collection_for_select(nav_categories, :id, :name, params[:category_id]),
-                         { include_blank: "All Categories" },
-                         class: "form-select form-select-sm" %>
-            <%= f.search_field :q, value: params[:q], placeholder: "Search products...", class: "form-control form-control-sm" %>
-            <%= f.submit "Search", class: "btn btn-primary btn-sm" %>
+          <% if defined?(products_path) %>
+            <%= form_with url: products_path, method: :get, local: true, class: "d-flex me-lg-3 my-2 my-lg-0" do %>
+              <%= search_field_tag :q, params[:q], placeholder: "Search products...", class: "form-control form-control-sm me-2", "aria-label": "Search products" %>
+              <%= submit_tag "Search", class: "btn btn-outline-light btn-sm" %>
+            <% end %>
           <% end %>
 
-          <ul class="navbar-nav ms-lg-3 mb-2 mb-lg-0 align-items-lg-center">
-            <li class="nav-item me-lg-2">
-              <%= link_to cart_path, class: "nav-link d-inline-flex align-items-center gap-1" do %>
-                <span>Cart</span>
-                <span class="badge bg-primary"><%= cart_item_count %></span>
-              <% end %>
-            </li>
+          <ul class="navbar-nav align-items-lg-center gap-2">
+            <% if defined?(cart_path) %>
+              <li class="nav-item">
+                <%= link_to cart_path, class: "btn btn-outline-info btn-sm" do %>
+                  Cart (<%= defined?(cart_item_count) ? cart_item_count : 0 %>)
+                <% end %>
+              </li>
+            <% end %>
+
             <% if defined?(user_signed_in?) && user_signed_in? %>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle"
@@ -97,36 +119,23 @@
       </div>
     </nav>
 
-    <div class="container">
-      <% if notice.present? %>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-          <%= notice %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <main class="flex-grow-1">
+      <div class="container">
+        <%= render "shared/flash" %>
+      </div>
+      <%= yield %>
+    </main>
+
+    <footer class="bg-dark text-light py-4 mt-auto">
+      <div class="container d-flex flex-wrap justify-content-between align-items-center small">
+        <span>© <%= Date.current.year %> Prairie Paws Pet Supplies</span>
+        <div class="d-flex gap-3">
+          <%= link_to "About Us", about_path, class: "text-light text-decoration-none" %>
+          <%= link_to "Contact", contact_path, class: "text-light text-decoration-none" %>
         </div>
-      <% end %>
-      <% if alert.present? %>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <%= alert %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-      <% end %>
-    </div>
+      </div>
+    </footer>
 
-    <%= yield %>
-
-    <script>
-      document.addEventListener("click", function (event) {
-        const toggle = document.getElementById("myAccountDropdown");
-        const menu = toggle ? toggle.nextElementSibling : null;
-        if (!toggle || !menu) return;
-
-        if (toggle.contains(event.target)) {
-          event.preventDefault();
-          menu.classList.toggle("show");
-        } else if (!menu.contains(event.target)) {
-          menu.classList.remove("show");
-        }
-      });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

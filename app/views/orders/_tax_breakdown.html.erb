@@ -1,0 +1,38 @@
+<%# locals: (order:) %>
+<div class="border-top pt-3">
+  <div class="d-flex justify-content-between small mb-1">
+    <span class="text-muted">Subtotal:</span>
+    <strong>$<%= number_with_precision(order.subtotal || 0, precision: 2) %></strong>
+  </div>
+
+  <% if order.gst_amount.to_d > 0 %>
+    <div class="d-flex justify-content-between small mb-1">
+      <span class="text-muted">GST:</span>
+      <strong>$<%= number_with_precision(order.gst_amount, precision: 2) %></strong>
+    </div>
+  <% end %>
+
+  <% if order.pst_amount.to_d > 0 %>
+    <div class="d-flex justify-content-between small mb-1">
+      <span class="text-muted">PST:</span>
+      <strong>$<%= number_with_precision(order.pst_amount, precision: 2) %></strong>
+    </div>
+  <% end %>
+
+  <% if order.hst_amount.to_d > 0 %>
+    <div class="d-flex justify-content-between small mb-1">
+      <span class="text-muted">HST:</span>
+      <strong>$<%= number_with_precision(order.hst_amount, precision: 2) %></strong>
+    </div>
+  <% end %>
+
+  <div class="d-flex justify-content-between small mb-2">
+    <span class="text-muted">Total Taxes:</span>
+    <strong>$<%= number_with_precision(order.tax_total || 0, precision: 2) %></strong>
+  </div>
+
+  <div class="d-flex justify-content-between fs-5 border-top pt-2">
+    <span>Grand Total:</span>
+    <strong>$<%= number_with_precision(order.total || 0, precision: 2) %></strong>
+  </div>
+</div>

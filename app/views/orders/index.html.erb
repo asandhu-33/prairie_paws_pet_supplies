@@ -1,8 +1,8 @@
 <div class="container py-4 pb-5">
   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <div>
-      <h1 class="h3 mb-1">My Orders</h1>
-      <p class="text-muted small mb-0">View your placed orders, invoices, and shipping details.</p>
+      <h1 class="h3 mb-1">My Past Orders</h1>
+      <p class="text-muted small mb-0">Review your past orders, products ordered, taxes, and grand totals.</p>
     </div>
     <%= link_to "← Continue Shopping", products_path, class: "btn btn-outline-secondary btn-sm" %>
   </div>
@@ -15,37 +15,31 @@
       </div>
     </div>
   <% else %>
-    <div class="card border-0 shadow-sm">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th class="ps-4">Order #</th>
-              <th>Date</th>
-              <th>Province</th>
-              <th>Status</th>
-              <th class="text-end">Tax</th>
-              <th class="text-end">Total</th>
-              <th class="pe-4 text-end">Invoice</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @orders.each do |order| %>
-              <tr>
-                <td class="ps-4 fw-semibold"><%= order.order_number.presence || "Order ##{order.id}" %></td>
-                <td><%= order.created_at.strftime("%b %d, %Y") %></td>
-                <td><%= order.shipping_province.presence || order.province&.name %></td>
-                <td><span class="badge bg-success"><%= order.status %></span></td>
-                <td class="text-end">$<%= number_with_precision(order.tax_total || 0, precision: 2) %></td>
-                <td class="text-end fw-semibold">$<%= number_with_precision(order.total || 0, precision: 2) %></td>
-                <td class="pe-4 text-end">
-                  <%= link_to "View Details", order_path(order), class: "btn btn-sm btn-outline-primary" %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+    <div class="d-flex flex-column gap-3">
+      <% @orders.each do |order| %>
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+              <span class="fw-bold"><%= order.order_number.presence || "Order ##{order.id}" %></span>
+              <span class="text-muted small ms-2">Placed on <%= order.created_at.strftime("%b %d, %Y") %></span>
+              <span class="badge bg-success ms-2"><%= order.status %></span>
+            </div>
+            <%= link_to "Full Invoice", order_path(order), class: "btn btn-sm btn-outline-primary" %>
+          </div>
+
+          <div class="card-body">
+            <div class="mb-3">
+              <%= render "orders/order_items_table", order: order %>
+            </div>
+
+            <div class="row justify-content-end">
+              <div class="col-md-6 col-lg-5">
+                <%= render "orders/tax_breakdown", order: order %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
   <% end %>
 </div>

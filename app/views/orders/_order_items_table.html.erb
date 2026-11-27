@@ -1,0 +1,25 @@
+<%# locals: (order:) %>
+<div class="table-responsive">
+  <table class="table table-sm align-middle mb-0">
+    <thead class="table-light">
+      <tr>
+        <th>Product</th>
+        <th class="text-center">Qty</th>
+        <th class="text-end">Unit Price</th>
+        <th class="text-end">Line Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% order.order_items.each do |item| %>
+        <% unit_price = (item.unit_price || 0).to_d %>
+        <% qty = item.quantity.to_i %>
+        <tr>
+          <td><%= item.product&.name || "Product ##{item.product_id}" %></td>
+          <td class="text-center"><%= qty %></td>
+          <td class="text-end">$<%= number_with_precision(unit_price, precision: 2) %></td>
+          <td class="text-end">$<%= number_with_precision(unit_price * qty, precision: 2) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
