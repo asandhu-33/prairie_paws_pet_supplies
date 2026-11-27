@@ -1,0 +1,28 @@
+<div class="panel">
+  <h3>Admin Profile</h3>
+  <div class="panel_contents">
+    <table class="attributes_table">
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <td><%= @admin.id %></td>
+        </tr>
+        <tr>
+          <th>Email</th>
+          <td><%= @admin.email %></td>
+        </tr>
+        <tr>
+          <th>Role</th>
+          <td>Administrator</td>
+        </tr>
+        <tr>
+          <th>Account Created</th>
+          <td><%= @admin.created_at.strftime("%B %d, %Y %H:%M") %></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 15px;">
+      <%= link_to "Edit Admin Account", edit_admin_admin_user_path(@admin), class: "button" %>
+    </p>
+  </div>
+</div>

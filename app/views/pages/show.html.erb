@@ -1,0 +1,27 @@
+<% content_for(:title) { "#{@page.title} | Prairie Paws Pet Supplies" } %>
+
+<div class="container my-5">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><%= link_to "Home", root_path %></li>
+      <li class="breadcrumb-item active" aria-current="page"><%= @page.title %></li>
+    </ol>
+  </nav>
+
+  <div class="card shadow-sm border">
+    <div class="card-body p-4 p-md-5">
+      <h1 class="display-6 fw-bold text-primary mb-4"><%= @page.title %></h1>
+
+      <div class="fs-5 text-secondary lh-lg">
+        <%= simple_format(@page.body) %>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="d-flex flex-wrap gap-2">
+        <%= link_to "Browse Products", products_path, class: "btn btn-primary" %>
+        <%= link_to "Back to Home", root_path, class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+  </div>
+</div>

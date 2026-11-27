@@ -1,0 +1,26 @@
+<div class="container">
+  <%= link_to "← Back to Catalog", products_path, class: "btn btn-link ps-0 mb-3" %>
+
+  <div class="card">
+    <div class="row g-0">
+      <% if @product.image.attached? %>
+        <div class="col-md-5">
+          <%= image_tag @product.image, class: "img-fluid rounded-start w-100 h-100", style: "object-fit: cover;", alt: @product.name %>
+        </div>
+      <% end %>
+      <div class="col-md-<%= @product.image.attached? ? '7' : '12' %>">
+        <div class="card-body">
+          <span class="badge bg-secondary mb-2"><%= @product.category.name %></span>
+          <% if @product.on_sale? %>
+            <span class="badge bg-danger mb-2">On Sale</span>
+          <% end %>
+          <h1 class="h3 card-title"><%= @product.name %></h1>
+          <p class="fs-4 fw-bold text-primary">$<%= number_with_precision(@product.price, precision: 2) %></p>
+          <p class="text-muted small">In Stock: <%= @product.stock %></p>
+          <hr>
+          <p class="card-text"><%= @product.description %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

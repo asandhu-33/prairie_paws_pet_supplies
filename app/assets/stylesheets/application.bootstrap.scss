@@ -1,2 +1,59 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+/* Center Devise views when rendered inside application layout */
+body > h2,
+body > form,
+body > .shared-links,
+body > p:has(a[href*="/users/"]) {
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body > h2 {
+  margin-top: 2rem;
+  margin-bottom: 1.25rem;
+  font-weight: 700;
+}
+
+body > form {
+  padding: 1.75rem;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+body > form .field {
+  margin-bottom: 1rem;
+}
+
+body > form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+body > form input[type="text"],
+body > form input[type="email"],
+body > form input[type="password"],
+body > form select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  box-sizing: border-box;
+}
+
+body > form input[type="submit"] {
+  width: 100%;
+  padding: 0.55rem 1rem;
+  margin-top: 0.5rem;
+  background-color: #0d6efd;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  cursor: pointer;
+}

@@ -6,7 +6,7 @@
       <p class="col-md-8 fs-4 text-muted">
         Your premier Winnipeg destination for premium dog and cat food, toys, treats, and everyday essentials.
       </p>
-      <%= link_to "Browse Products", "#", class: "btn btn-primary btn-lg px-4 gap-3 mt-3" %>
+      <%= link_to "Browse Products", products_path, class: "btn btn-primary btn-lg px-4 gap-3 mt-3" %>
     </div>
   </div>
 
@@ -16,14 +16,14 @@
       <div class="h-100 p-5 bg-white border rounded-3 shadow-sm">
         <h2>🐶 Dog Essentials</h2>
         <p>Explore high-quality nutrition, durable chew toys, comfortable beds, and grooming supplies tailored for dogs of all sizes.</p>
-        <button class="btn btn-outline-secondary" type="button">Shop Dogs</button>
+        <%= link_to "Shop Dogs", products_path(pet: "dogs"), class: "btn btn-outline-secondary" %>
       </div>
     </div>
     <div class="col-md-6">
       <div class="h-100 p-5 bg-white border rounded-3 shadow-sm">
         <h2>🐱 Cat Essentials</h2>
         <p>Discover gourmet cat food, engaging teaser toys, scratching posts, and cozy litter solutions for your feline friends.</p>
-        <button class="btn btn-outline-secondary" type="button">Shop Cats</button>
+        <%= link_to "Shop Cats", products_path(pet: "cats"), class: "btn btn-outline-secondary" %>
       </div>
     </div>
   </div>
